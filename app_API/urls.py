@@ -16,12 +16,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib import admin
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-# let this be the web app endpoint
+    # let this be the web app endpoint
     path('make_a_meal/', include('make_a_meal.urls')),
 
-# and this, the api endpoint
-    path('api/v1/', include('api.urls'))
+    # Directly include each app's urls
+    path('api/v1/menu/', include('menu.urls')),
+    path('api/v1/orders/', include('order.urls')),
+    path('api/v1/accounts/', include('accounts.urls')),
+    path('api/v1/cart/', include('order.urls')),
+
+
+
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+
+    # optional: your API app
+    path("api/v1/", include("accounts.urls")),
 ]
