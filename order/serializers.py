@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from make_a_meal.models import Order,OrderItem
+from .models import Order,OrderItem
 from menu.serializers import MenuItemSerializer
 from accounts.serializers import UserSerializer
 from .models import Cart

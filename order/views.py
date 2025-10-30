@@ -9,11 +9,6 @@ from rest_framework.permissions import IsAuthenticated
 
 from django.http import JsonResponse
 
-def make_a_meal_view(request):
-    return JsonResponse({"message": "Make a meal endpoint is working!"})
-
-
-
 
 
 class OrderViewSet(viewsets.ModelViewSet):

@@ -1,19 +1,22 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+#import uuid
 
 class Meal(models.Model):
-    meal_id = models.CharField(max_length=200, unique=True)
-    meal_name = models.CharField(max_length=100)
+   # id = models.CharField(max_length=100)
+    vendor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="meal_items", null=True,blank=True)
+    name = models.CharField(max_length=100)
     image = models.ImageField(upload_to="uploads/meals/", blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+  
 
     class Meta:
-        ordering = ["meal_name"]  
+        ordering = ["name"]  
 
     def __str__(self):
-        return self.meal_name
+        return self.name
 
 
 class MenuItem(models.Model):
