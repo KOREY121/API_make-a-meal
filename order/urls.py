@@ -9,8 +9,6 @@ router.register('orders', OrderViewSet, basename= 'order')
 
 
 urlpatterns = [
-    path('make_a_meal/', views.make_a_meal_view),
-
 
     path('', include(router.urls))
 ]

@@ -1,0 +1,13 @@
+# cache file
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environment
+env/
+venv/
+
+# media files
+uploads/

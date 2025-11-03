@@ -28,7 +28,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
     # let this be the web app endpoint
-    path('make_a_meal/', include('make_a_meal.urls')),
+    #path('make_a_meal/', include('make_a_meal.urls')),
 
     # Directly include each app's urls
     path('api/v1/menu/', include('menu.urls')),
