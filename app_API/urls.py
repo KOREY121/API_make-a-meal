@@ -32,9 +32,8 @@ urlpatterns = [
 
     # Directly include each app's urls
     path('api/v1/menu/', include('menu.urls')),
-    path('api/v1/orders/', include('order.urls')),
     path('api/v1/accounts/', include('accounts.urls')),
-    path('api/v1/cart/', include('order.urls')),
+    path('api/v1/', include('order.urls')),
 
 
 
