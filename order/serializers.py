@@ -64,6 +64,7 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ["id", "user", "items"]
+        read_only_fields =['user']
 
     def get_items(self, obj):
         return [
