@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Order,OrderItem
 from menu.serializers import MenuItemSerializer
 from accounts.serializers import UserSerializer
-from .models import Cart
+from .models import Cart, CartItem
 from menu.models import Meal
 
 
@@ -19,12 +19,13 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    items = OrderItemSerializer(many=True, read_only=True)
+    customer = UserSerializer(source='customer_id', read_only=True)
+    vendor = UserSerializer(source='vendor_id', read_only=True)
+    order_items = OrderItemSerializer(many=True, read_only=True)
 
     class Meta:
         model = Order
-        fields = ["id", "user", "order_date", "status", "total_amount", "items"]
+        fields = ["id", "customer","vendor", "order_date", "status", "total_amount", "items"]
 
 
     def create(self, validated_data):
@@ -42,15 +43,28 @@ class OrderSerializer(serializers.ModelSerializer):
         order.total_amount = total
         order.save()
         return order
+    
+class CartItemSerializer(serializers.ModelSerializer):
+    menu_item = MenuItemSerializer(read_only=True)
+    menu_item_id = serializers.PrimaryKeyRelatedField(
+        queryset=CartItem._meta.get_field('menu_item').remote_field.model.objects.all(),
+        source='menu_item',
+        write_only=True
+    )
+
+    class Meta:
+        model = CartItem
+        fields = ["id", "menu_item", "menu_item_id", "quantity", "price"]
 
 
 class CartSerializer(serializers.ModelSerializer):
-    items = serializers.SerializerMethodField()
+    items = CartItemSerializer(many=True, read_only=True)
     
 
     class Meta:
         model = Cart
         fields = ["id", "user", "items"]
+        read_only_fields =['user']
 
     def get_items(self, obj):
         return [

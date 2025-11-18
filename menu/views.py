@@ -1,7 +1,8 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions,status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from datetime import date, timedelta
 
 from .models import Meal, MenuItem
 from .serializers import MealSerializer, MenuItemSerializer
@@ -14,6 +15,33 @@ class MealViewSet(viewsets.ModelViewSet):
     queryset = Meal.objects.all().order_by("-created_at")
     serializer_class = MealSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+    def get_queryset(self):
+        user = self.request.user
+        today = date.today()
+        tomorrow = today + timedelta(days=1)
+
+        # ✅ Vendors see all their meals
+        if user.is_authenticated and hasattr(user, 'account_profile') and user.account_profile.role == 'vendor':
+            return Meal.objects.filter(vendor=user).order_by("-created_at")
+
+        # ✅ Customers/public only see today and tomorrow’s meals
+        return Meal.objects.filter(date__in=[today, tomorrow]).order_by("-created_at")
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        user = request.user
+        if user.is_authenticated and hasattr(user, 'account_profile') and user.account_profile.role == 'vendor':
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        # Custom message for customers/public users
+        return Response({
+            "message": "Showing only meals available for today and tomorrow.",
+            "data": serializer.data
+        }, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
         user = self.request.user

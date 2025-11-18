@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-#import uuid
+from datetime import date
+
 
 class Meal(models.Model):
    # id = models.CharField(max_length=100)
@@ -8,6 +9,7 @@ class Meal(models.Model):
     name = models.CharField(max_length=100)
     image = models.ImageField(upload_to="uploads/meals/", blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    date = models.DateField(default=date.today)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
   
