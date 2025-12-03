@@ -14,6 +14,9 @@ from pathlib import Path
 
 import os
 
+import dj_database_url
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -85,17 +88,26 @@ WSGI_APPLICATION = 'app_API.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'my database',
-        'USER': 'korede',
-        'PASSWORD': 'oluwakore4',
-        'HOST': 'localhost',
-        'PORT': '5432',
+if os.environ.get('RAILWAY_ENVIRONMENT'):
+    # Production: Use Railway database
+    DATABASES = {
+        'default': dj_database_url.config(
+            default='postgresql://postgres:JWALfbXqnLLbyfOBxAosqZWoIUGXVNLz@postgres.railway.internal:5432/railway',
+            conn_max_age=600
+        )
     }
-}
-
+else:
+    # Local development: Use your local database
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'my database',
+            'USER': 'korede',
+            'PASSWORD': 'oluwakore4',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
