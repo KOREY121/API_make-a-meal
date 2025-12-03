@@ -1,1 +1,1 @@
-web: gunicorn app_API.wsgi
+web: gunicorn app_API.wsgi --bind 0.0.0.0:8000
