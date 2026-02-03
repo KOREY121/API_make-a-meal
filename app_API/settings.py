@@ -109,14 +109,6 @@ WSGI_APPLICATION = 'app_API.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    ALLOWED_HOSTS = ['*']  # Allow all hosts in Railway production
-else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-
-# DEBUG configuration
-DEBUG = not os.environ.get('RAILWAY_ENVIRONMENT') 
-
 
 if os.environ.get('RENDER'):
     # Production: Use Render database
