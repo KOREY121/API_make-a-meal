@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-=v@n*&e$qjchxhm6#lp07$29l^ib%kt(5kl7^yke96z6gt=@qp'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-=v@n*&e$qjchxhm6#lp07$29l^ib%kt(5kl7^yke96z6gt=@qp')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -34,6 +34,8 @@ ALLOWED_HOSTS = [
     os.environ.get("RAILWAY_PUBLIC_DOMAIN"),
     "localhost",
     "127.0.0.1",
+    '.onrender.com',
+    '.netlify.app',
 ]
 
 
@@ -59,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -115,16 +118,16 @@ else:
 DEBUG = not os.environ.get('RAILWAY_ENVIRONMENT') 
 
 
-if os.environ.get('RAILWAY_ENVIRONMENT'):
-    # Production: Use Railway database
+if os.environ.get('RENDER'):
+    # Production: Use Render database
     DATABASES = {
         'default': dj_database_url.config(
-            default='postgresql://postgres:JWALfbXqnLLbyfOBxAosqZWoIUGXVNLz@postgres.railway.internal:5432/railway',
+            default='postgresql://postgres:postgres@localhost/postgres',
             conn_max_age=600
         )
     }
 else:
-    # Local development: Use your local database
+    # Local development
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
