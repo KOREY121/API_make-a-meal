@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
     os.environ.get("RAILWAY_PUBLIC_DOMAIN"),
     "localhost",
     "127.0.0.1",
+    'makeameal.onrender.com',
     '.onrender.com',
     '.netlify.app',
 ]
