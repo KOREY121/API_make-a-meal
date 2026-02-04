@@ -16,30 +16,42 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.contrib import admin
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+from django.http import JsonResponse
+from accounts.views import CustomTokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 
+def api_home(request):
+    """Welcome page for the API"""
+    return JsonResponse({
+        "message": "Welcome to MakeAMeal API",
+        "version": "1.0",
+        "endpoints": {
+            "authentication": {
+                "login": "/api/token/",
+                "refresh": "/api/token/refresh/",
+                "register": "/api/v1/accounts/register/"
+            },
+            "menu": "/api/v1/menu/",
+            "orders": "/api/v1/orders/",
+            "admin": "/admin/"
+        }
+    })
 
 
 urlpatterns = [
+    # Home/Welcome endpoint
+    path('', api_home, name='api_home'),
+    
+    # Admin
     path('admin/', admin.site.urls),
-    # let this be the web app endpoint
-    #path('make_a_meal/', include('make_a_meal.urls')),
-
-    # Directly include each app's urls
-    path('api/v1/menu/', include('menu.urls')),
-    path('api/v1/accounts/', include('accounts.urls')),
-    path('api/v1/', include('order.urls')),
-
-
-
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    
+    # Authentication endpoints (using custom view that returns user data)
+    path("api/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-
-    # optional: your API app
-    path("api/v1/", include("accounts.urls")),
+    
+    # App endpoints
+    path('api/v1/accounts/', include('accounts.urls')),
+    path('api/v1/menu/', include('menu.urls')),
+    path('api/v1/', include('order.urls')),
 ]
