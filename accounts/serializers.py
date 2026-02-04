@@ -3,26 +3,24 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Profile
 
+User = get_user_model()
 
-
-
-user = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
+    role = serializers.CharField(source='profile.role', read_only=True)
+    business_name = serializers.CharField(source='profile.business_name', read_only=True)
+    
     class Meta:
         model = User
-        fields = ["id", "username", "email"]
-        
-
-
+        fields = ["id", "username", "email", "first_name", "last_name", "role", "business_name"]
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    # these  are my fields for Profile
+    # Profile fields
     role = serializers.ChoiceField(choices=Profile.ROLE_CHOICES, default='user')
     business_name = serializers.CharField(required=False, allow_blank=True)
     address = serializers.CharField(required=False, allow_blank=True)
     first_name = serializers.CharField(required=False, allow_blank=True)
     last_name = serializers.CharField(required=False, allow_blank=True)
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, min_length=8)
 
     class Meta:
         model = User
@@ -37,12 +35,24 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             "address",
         ]
 
+    def validate_email(self, value):
+        """Ensure email is unique"""
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
+
+    def validate_username(self, value):
+        """Ensure username is unique"""
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("A user with this username already exists.")
+        return value
+
     def create(self, validated_data):
         role = validated_data.pop("role", "user")
         business_name = validated_data.pop("business_name", "")
         address = validated_data.pop("address", "")
 
-        # this should create user
+        # Create user
         user = User.objects.create_user(
             username=validated_data["username"],
             email=validated_data.get("email"),
