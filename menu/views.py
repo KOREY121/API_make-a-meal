@@ -2,6 +2,8 @@ from rest_framework import viewsets, permissions,status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import MultiPartParser, FormParser
+
 from datetime import date, timedelta
 
 from .models import Meal, MenuItem
@@ -15,6 +17,7 @@ class MealViewSet(viewsets.ModelViewSet):
     queryset = Meal.objects.all().order_by("-created_at")
     serializer_class = MealSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    parser_classes = (MultiPartParser, FormParser)
 
 
     def get_queryset(self):
