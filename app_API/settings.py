@@ -199,8 +199,8 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'dlahxhmjv',
-    'API_KEY': '145855292163735',
-    'API_SECRET': 'jddGNmKiKEztKpGFEOSzk2UTXgE'
+    'API_KEY': '721699942896761',
+    'API_SECRET': 'FoLnA91qHYe-r-xdRHJgYm4pkDQ'
 }
 
 MEDIA_URL = '/media/'
