@@ -205,11 +205,10 @@ CLOUDINARY_STORAGE = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if not os.path.exists(MEDIA_ROOT):
+    os.makedirs(MEDIA_ROOT)
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-CORS_ALLOWED_ORIGINS = [
-    "https://makeamealreact.netlify.app",
-]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_METHODS = [
