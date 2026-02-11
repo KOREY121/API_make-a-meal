@@ -5,9 +5,12 @@ from .models import Meal, MenuItem
 
 
 class MealSerializer(serializers.ModelSerializer):
+    vendor_name = serializers.CharField(source='vendor.username', read_only=True)
+    description = serializers.CharField(required=False, allow_blank=True)
     class Meta:
         model = Meal
-        fields = [ "name","price", "image","vendor", "date", "created_at", "updated_at"]
+        fields = ['id', 'name', 'price', 'image', 'description', 'date', 'vendor', 'vendor_name', 'created_at']
+        read_only_fields = ['vendor', 'created_at']
 
 
 class MenuItemSerializer(serializers.ModelSerializer):

@@ -19,29 +19,13 @@ from django.urls import include, path
 from django.http import JsonResponse
 from accounts.views import CustomTokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
+from django.conf import settings
+from django.conf.urls.static import static
 
-
-def api_home(request):
-    """Welcome page for the API"""
-    return JsonResponse({
-        "message": "Welcome to MakeAMeal API",
-        "version": "1.0",
-        "endpoints": {
-            "authentication": {
-                "login": "/api/token/",
-                "refresh": "/api/token/refresh/",
-                "register": "/api/v1/accounts/register/"
-            },
-            "menu": "/api/v1/menu/",
-            "orders": "/api/v1/orders/",
-            "admin": "/admin/"
-        }
-    })
 
 
 urlpatterns = [
-    # Home/Welcome endpoint
-    path('', api_home, name='api_home'),
+    
     
     # Admin
     path('admin/', admin.site.urls),
@@ -55,3 +39,5 @@ urlpatterns = [
     path('api/v1/menu/', include('menu.urls')),
     path('api/v1/', include('order.urls')),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

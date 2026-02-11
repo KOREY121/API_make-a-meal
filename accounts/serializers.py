@@ -6,12 +6,25 @@ from .models import Profile
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
-    role = serializers.CharField(source='profile.role', read_only=True)
-    business_name = serializers.CharField(source='profile.business_name', read_only=True)
+    role = serializers.SerializerMethodField()
+    business_name = serializers.SerializerMethodField()
     
     class Meta:
         model = User
         fields = ["id", "username", "email", "first_name", "last_name", "role", "business_name"]
+    
+    def get_role(self, obj):
+        """Safely get role, return 'user' if profile doesn't exist"""
+        if hasattr(obj, 'profile') and obj.profile:
+            return obj.profile.role
+        return 'user'  # default role
+    
+    def get_business_name(self, obj):
+        """Safely get business_name"""
+        if hasattr(obj, 'profile') and obj.profile:
+            return obj.profile.business_name
+        return ''
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     # Profile fields
