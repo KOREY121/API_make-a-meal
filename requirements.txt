@@ -21,3 +21,5 @@ tzdata==2025.2
 urllib3==2.5.0
 whitenoise==6.11.0
 django-cors-headers
+cloudinary
+django-cloudinary-storage
